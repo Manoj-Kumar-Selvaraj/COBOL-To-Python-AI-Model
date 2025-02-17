@@ -1,0 +1,329 @@
+    Computational items 228 
+    DISPLAY phrase230
+    DISPLAY-1 phrase 230
+    FUNCTION-POINTER phrase 231
+    INDEX phrase 231
+    NATIONAL phrase231
+    OBJECT REFERENCE phrase232
+    POINTER phrase232
+    POINTER-32 phrase 233
+    PROCEDURE-POINTER phrase 234
+    NATIVE phrase235
+    vii
+    UTF-8 phrase 235
+    VALUE clause235
+    Format 1235
+    Format 2238
+    Format 3241
+    VOLATILE clause 242
+    Part 6 PROCEDURE DIVISION 245
+    Chapter 19 Procedure division structure 247
+    Requirements for a method procedure division248
+    The PROCEDURE DIVISION header 248
+    The USING phrase 249
+    RETURNING phrase250
+    References to items in the LINKAGE SECTION 251
+    Declaratives251
+    Procedures 252
+    Arithmetic expressions 253
+    Arithmetic operators 254
+    Conditional expressions255
+    Simple conditions 255
+    Class condition256
+    Condition-name condition258
+    Relation conditions 259
+    General relation conditions 259
+    Data pointer relation conditions267
+    Procedure-pointer and function-pointer relation conditions268
+    Object-reference relation conditions 269
+    Sign condition 270
+    Switch-status condition270
+    Complex conditions 270
+    Negated simple conditions271
+    Combined conditions272
+    Abbreviated combined relation conditions274
+    Statement categories277
+    Imperative statements277
+    Conditional statements 279
+    Delimited scope statements 280
+    Explicit scope terminators280
+    Implicit scope terminators 281
+    Compiler-directing statements 281
+    Statement operations 281
+    CORRESPONDING phrase 282
+    GIVING phrase283
+    ROUNDED phrase 283
+    SIZE ERROR phrases 283
+    Arithmetic statements284
+    Arithmetic statement operands 284
+    Data manipulation statements286
+    Input-output statements286
+    Common processing facilities 286
+    Chapter 20 PROCEDURE DIVISION statements 293
+    ACCEPT statement 293
+    Data transfer 293
+    System date-related information transfer 295
+    DATE, DATE YYYYMMDD, DAY, DAY YYYYDDD, DAY-OF-WEEK, and TIME 295
+    viii
+    Example of the ACCEPT statement 297
+    ADD statement 297
+    ALLOCATE statement 299
+    Example: ALLOCATE and FREE storage for UNBOUNDED tables301
+    ALTER statement303
+    Segmentation considerations 304
+    CALL statement 304
+    CANCEL statement310
+    CLOSE statement 311
+    Effect of CLOSE statement on file types 312
+    COMPUTE statement314
+    CONTINUE statement 315
+    DELETE statement 316
+    DISPLAY statement317
+    DIVIDE statement 319
+    ENTRY statement 322
+    EVALUATE statement 323
+    Determining values325
+    Comparing selection subjects and objects 326
+    Executing the EVALUATE statement 326
+    EXIT statement 326
+    Format 1 (simple) 327
+    Format 2 (program) 327
+    Format 3 (method)327
+    Format 5 (inline-perform)328
+    Format 6 (procedure) 328
+    FREE statement329
+    GOBACK statement329
+    GO TO statement330
+    Unconditional GO TO 330
+    Conditional GO TO 331
+    Altered GO TO 331
+    IF statement332
+    Transferring control 332
+    Nested IF statements333
+    INITIALIZE statement 334
+    INITIALIZE statement rules336
+    INSPECT statement 337
+    Data flow 344
+    Comparison cycle 344
+    Example of the INSPECT statement 345
+    INVOKE statement 346
+    Interoperable data types for COBOL and Java 350
+    Miscellaneous argument types for COBOL and Java 352
+    JSON GENERATE statement 353
+    Nested JSON GENERATE or JSON PARSE statements359
+    Operation of JSON GENERATE 359
+    Format conversion of elementary data 360
+    Trimming of generated JSON data 361
+    JSON name formation 361
+    JSON PARSE statement 362
+    Nested JSON GENERATE or JSON PARSE statements367
+    Operation of JSON PARSE 367
+    Examples of matched and mismatched data definitions and JSON text368
+    Count of table elements set by JSON PARSE 369
+    Valid and invalid elementary moves 369
+    MERGE statement 370
+    MERGE special registers374
+    ix
+    Segmentation considerations 375
+    MOVE statement 375
+    Elementary moves 376
+    Moves involving file record areas 380
+    Group moves380
+    MULTIPLY statement381
+    OPEN statement383
+    General rules385
+    OPEN statement notes 385
+    PERFORM statement387
+    Basic PERFORM statement 388
+    PERFORM with TIMES phrase 392
+    PERFORM with UNTIL phrase 392
+    PERFORM with VARYING phrase 393
+    READ statement 399
+    Processing files with variable-length records or multiple record descriptions 401
+    Sequential access mode401
+    Random access mode 403
+    Dynamic access mode 404
+    READ statement notes 404
+    RELEASE statement 404
+    RETURN statement 405
+    REWRITE statement407
+    Reusing a logical record 408
+    Sequential files 408
+    Indexed files 408
+    Relative files409
+    SEARCH statement 409
+    Serial search 411
+    Binary search 413
+    Search statement considerations 415
+    SET statement 415
+    Format 1: SET for basic table handling 416
+    Format 2: SET for adjusting indexes 417
+    Format 3: SET for external switches 417
+    Format 4: SET for condition-names 418
+    Format 5: SET for USAGE IS POINTER data items 418
+    Format 6: SET for procedure-pointer and function-pointer data items419
+    Format 7: SET for USAGE OBJECT REFERENCE data items421
+    Format 8: SET for length of dynamic-length elementary items 421
+    SORT statement 422
+    SORT special registers429
+    Segmentation considerations 429
+    START statement430
+    Indexed files 431
+    Relative files431
+    STOP statement 432
+    STRING statement 432
+    Data flow 435
+    Example of the STRING statement 436
+    SUBTRACT statement 437
+    UNSTRING statement 439
+    Data flow 443
+    Values at the end of execution of the UNSTRING statement444
+    Example of the UNSTRING statement 445
+    WRITE statement 445
+    WRITE for sequential files450
+    WRITE for indexed files 452
+    x
+    WRITE for relative files452
+    XML GENERATE statement 453
+    Nested XML GENERATE or XML PARSE statements 460
+    Operation of XML GENERATE 460
+    Format conversion of elementary data 461
+    Trimming of generated XML data 462
+    XML element name and attribute name formation462
+    XML PARSE statement 463
+    Nested XML GENERATE or XML PARSE statements 467
+    Control flow467
+    Part 7 Intrinsic functions 469
+    Chapter 21 Intrinsic functions 471
+    Specifying a function471
+    Function definition and evaluation472
+    Types of functions472
+    Rules for usage 473
+    Arguments474
+    Examples 475
+    ALL subscripting 476
+    Format of arguments and return values for date and time intrinsic functions 477
+    Function definitions481
+    ABS 488
+    ACOS488
+    ANNUITY 488
+    ASIN489
+    ATAN 489
+    BIT-OF 489
+    BIT-TO-CHAR 490
+    BYTE-LENGTH 490
+    CHAR491
+    COMBINED-DATETIME 492
+    COS 492
+    CURRENT-DATE493
+    DATE-OF-INTEGER 494
+    DATE-TO-YYYYMMDD 494
+    DAY-OF-INTEGER495
+    DAY-TO-YYYYDDD 495
+    DISPLAY-OF496
+    E 497
+    EXP 498
+    EXP10 498
+    FACTORIAL 498
+    FORMATTED-CURRENT-DATE 499
+    FORMATTED-DATE499
+    FORMATTED-DATETIME 500
+    FORMATTED-TIME 502
+    HEX-OF 503
+    HEX-TO-CHAR 503
+    INTEGER504
+    INTEGER-OF-DATE 504
+    INTEGER-OF-DAY 505
+    INTEGER-OF-FORMATTED-DATE505
+    INTEGER-PART506
+    LENGTH 506
+    LOG 508
+    xi
+    LOG10508
+    LOWER-CASE508
+    MAX509
+    MEAN 510
+    MEDIAN 510
+    MIDRANGE 510
+    MIN 511
+    MOD 511
+    NATIONAL-OF 512
+    NUMVAL513
+    NUMVAL-C 514
+    NUMVAL-F 515
+    ORD516
+    ORD-MAX517
+    ORD-MIN 517
+    PI 518
+    PRESENT-VALUE 518
+    RANDOM518
+    RANGE 519
+    REM519
+    REVERSE520
+    SECONDS-FROM-FORMATTED-TIME521
+    SECONDS-PAST-MIDNIGHT 521
+    SIGN 522
+    SIN522
+    SQRT 523
+    STANDARD-DEVIATION 523
+    SUM523
+    TAN 524
+    TEST-DATE-YYYYMMDD524
+    TEST-DAY-YYYYDDD 525
+    TEST-FORMATTED-DATETIME 526
+    TEST-NUMVAL 526
+    TEST-NUMVAL-C 527
+    TEST-NUMVAL-F529
+    TRIM 530
+    ULENGTH 530
+    UPOS531
+    UPPER-CASE 533
+    USUBSTR 534
+    USUPPLEMENTARY 535
+    UUID4 536
+    UVALID 537
+    UWIDTH539
+    VARIANCE 540
+    WHEN-COMPILED 541
+    YEAR-TO-YYYY 542
+    Part 8 Compiler-directing statements and compiler directives 543
+    Chapter 22 Compiler-directing statements 545
+    BASIS statement545
+    PROCESS(CBL) statement546
+    *CONTROL (*CBL) statement 546
+    Source code listing 547
+    Object code listing 547
+    Storage map listing 547
+    xii
+    COPY statement 548
+    Comparison and replacement rules551
+    Comparison and replacement examples 553
+    Copy member search order557
+    DELETE statement 557
+    EJECT statement558
+    ENTER statement 558
+    INSERT statement559
+    READY or RESET TRACE statement559
+    REPLACE statement 560
+    Comparison rules562
+    Replacement rules562
+    SERVICE LABEL statement 563
+    SERVICE RELOAD statement 564
+    SKIP statements 564
+    TITLE statement564
+    USE statement565
+    EXCEPTION/ERROR declarative565
+    Precedence rules for nested programs567
+    DEBUGGING declarative 567
+    Chapter 23 Compiler directives569
+    CALLINTERFACE569
+    DATA 570
+    INLINE 570
+    Conditional compilation 572
+    DEFINE573
+    EVALUATE574
+    IF 576
+    Examples of conditional compilation577
+    Constant conditional expressions 578
+    Compile-time arithmetic expressions579
+    Predefined compilation variables 580

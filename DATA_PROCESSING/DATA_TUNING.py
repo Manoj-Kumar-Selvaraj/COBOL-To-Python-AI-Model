@@ -1,88 +1,108 @@
-from PYTHON_INDEX_LIST import PYTHON_LIST
-from COBOL_INDEX_LIST import COBOL_LIST
-import requests
+import openai
 import os
 import json
+import re
+from PYTHON_INDEX_LIST import PYTHON_INDEX_LIST
+from COBOL_INDEX_LIST import COBOL_INDEX_LIST
 
-# Your Hugging Face API token
-HF_TOKEN = os.getenv("HF_TOKEN")
+# OpenAI API Key
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+if not OPENAI_API_KEY:
+    raise ValueError("❌ OPENAI_API_KEY environment variable is not set.")
 
-# Model endpoint (Mistral)
-MODEL = "mistralai/Mistral-7B-Instruct-v0.3"
+client = openai.OpenAI()
 
-# MODEL = "Salesforce/codet5-base"
-
-API_URL = f"https://api-inference.huggingface.co/models/{MODEL}"
-headers = {"Authorization": f"Bearer {HF_TOKEN}"}
-
-# Function to save the list to a file
+# Function to save the mapped list to a file
 def save_list_to_file(data_list, output_file):
     try:
-        mapped_data = [item.strip().rstrip(",") for item in data_list]
-        
-        # Convert JSON string to Python list of dictionaries
-        mapped_data.pop()
-        # Convert list to a Python dictionary format
-        json_string = f"[{', '.join(mapped_data)}]"
-
-        # Convert JSON string to a Python list of dictionaries
-        dict_list = json.loads(json_string)    
-        with open(output_file, 'w') as file:
-            # Write the list directly to the file
-            # for item in data_list:
-            file.write(f"PYTHON_COBOL_MAPPING = {dict_list}\n")
-        print(f"Data successfully saved to {output_file}")
+        with open(output_file, 'w', encoding='utf-8') as file:
+            file.write(f"PYTHON_COBOL_MAPPING = {json.dumps(data_list, indent=4)}\n")
+        print(f"✅ Data successfully saved to {output_file}")
     except Exception as e:
-        print(f"Error saving data to {output_file}: {e}")
+        print("❌ Error saving file:", e)
 
-# Save the list to a file
-output_file = "PYTHON_COBOL.py"
-# Function to query the model with the list content
-def query_model(prompt):
-    payload = {
-        "inputs": prompt,
-        "parameters": {
-            "temperature": 0.7,
-        }
-    }
-    response = requests.post(API_URL, headers=headers, json=payload)
-    
+# Function to call OpenAI API
+def query_openai(prompt):
     try:
-        result = response.json()
-        if isinstance(result, dict) and "error" in result:
-            print("Error:", result["error"])
-        else:
-            # Clean the output, making sure it's just a list
-            # print("This is Result")
-            # print(result)
-            output_data = result[0]["generated_text"].strip()
-            output_data_list = output_data.split('\n')
-            save_list_to_file(output_data_list[19:], output_file)
-            print("Processed List:")
-            # print(output_data_list[19:])
+        response = client.chat.completions.create(
+            model="gpt-4",
+            messages=[
+                {"role": "system", "content": "You are an expert in mapping COBOL concepts to Python."},
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0.4
+        )
+
+        # Extract API response
+        output_data = response.choices[0].message.content.strip()
+        print("📥 Raw API Response:\n", output_data)
+
+        # Remove Markdown formatting
+        json_match = re.search(r'```(?:json)?\s*([\s\S]+?)\s*```', output_data)
+        if json_match:
+            output_data = json_match.group(1).strip()
+
+        # Validate JSON format
+        try:
+            return json.loads(output_data)
+        except json.JSONDecodeError:
+            print("❌ Unexpected response format. Could not extract valid JSON.")
+            return []
     except Exception as e:
-        print("Failed to parse response:", e)
+        print("❌ Failed to query OpenAI API:", e)
+        return []
 
-# Create the prompt with the COBOL index list
-prompt = f"""
-You are an expert in converting legacy COBOL code to Python. I have two lists below:
+# Function to split list into chunks
+def split_list(lst, chunk_size):
+    """Splits a list into smaller chunks of `chunk_size`."""
+    for i in range(0, len(lst), chunk_size):
+        yield lst[i:i + chunk_size]
 
-COBOL Concepts (COBOL_LIST):
-{COBOL_LIST}
+# Process list in chunks
+def process_cobol_to_python_mapping():
+    all_mappings = []
 
-Python Concepts (PYTHON_LIST):
-{PYTHON_LIST}
+    # Define chunk size (e.g., 20 items per batch)
+    chunk_size = 100
 
-For each COBOL concept in COBOL_LIST, please map it to the best corresponding Python concept(PYTHON_LIST) based on the lists provided. If No Appropriate matches found for cobol in python data, mention NOT FOUND. Return the mapping as a JSON list where each element is an object with two keys: "cobol_concept" and "python_concept". Also the last numerics of each item in the lists are page numbers of the documentation. Return page numbers in both the values.
+    for index, chunk in enumerate(split_list(COBOL_INDEX_LIST, chunk_size)):
+        print(f"🚀 Processing chunk {index + 1}/{(len(COBOL_INDEX_LIST) // chunk_size) + 1}")
 
-For example:
-[
-    {{"cobol_concept": "DISPLAY phrase", "python_concept": "print() function"}},
-    {{"cobol_concept": "MOVE statement", "python_concept": "assignment using '='"}} 
-]
+        prompt = f"""
+        You are an expert in converting legacy COBOL code to Python. Your task is to map COBOL concepts to their closest equivalent Python concepts.
 
-Please return only the JSON list in your response with no additional text.
-"""
+        ### COBOL Concepts:
+        {chunk}
 
-# Query the model with the prompt
-query_model(prompt)
+        ### Python Concepts:
+        {PYTHON_INDEX_LIST}
+
+        ### Instructions:
+        - For **each** COBOL concept, find the best matching Python concept.
+        - If no suitable match is found, set the Python concept as `"NOT FOUND"`.
+        - **Do not exclude any COBOL concepts**; ensure every item in the chunk is included in the output.
+
+        ### Output Format:
+        Return the result as a **valid JSON array** where:
+        - Each object contains `"cobol_concept"` and `"python_concept"` keys.
+        - Ensure the JSON is **well-formatted** with no extra text.
+
+        ### Example Output:
+        ```json
+        [
+            {{"cobol_concept": "DISPLAY phrase", "python_concept": "print() function"}},
+            {{"cobol_concept": "MOVE statement", "python_concept": "assignment using '='"}},
+            {{"cobol_concept": "UNMATCHED_CONCEPT", "python_concept": "NOT FOUND"}}
+        ]
+        ```
+        """
+
+        chunk_mapping = query_openai(prompt)
+        all_mappings.extend(chunk_mapping)
+
+    # Save final combined result
+    save_list_to_file(all_mappings, "PYTHON_COBOL.py")
+    print("✅ All COBOL concepts processed and saved!")
+
+if __name__ == "__main__":
+    process_cobol_to_python_mapping()

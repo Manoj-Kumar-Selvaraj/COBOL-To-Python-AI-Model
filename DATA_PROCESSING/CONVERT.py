@@ -6,7 +6,7 @@ import importlib.util
 from sklearn.metrics.pairwise import cosine_similarity
 
 # Load PYTHON_COBOL_MAPPING from external Python file
-MAPPING_FILE = "python_cobol_mapping.py"
+MAPPING_FILE = "PYTHON_COBOL.py"
 spec = importlib.util.spec_from_file_location("mapping_module", MAPPING_FILE)
 mapping_module = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(mapping_module)
@@ -15,7 +15,7 @@ PYTHON_COBOL_MAPPING = mapping_module.PYTHON_COBOL_MAPPING
 # OpenAI API Key (Set your actual key here)
 openai.api_key = "OPENAI_API_KEY"
 
-# Function to extract text from PDF
+# Function to extract text from a PDF
 def extract_text_from_pdf(pdf_path):
     doc = fitz.open(pdf_path)
     text = ""
@@ -23,10 +23,15 @@ def extract_text_from_pdf(pdf_path):
         text += page.get_text("text") + "\n"
     return text
 
-# Load COBOL documentation
+# Load COBOL and Python documentation
 COBOL_DOC_PATH = "cobol_doc.pdf"
+PYTHON_DOC_PATH = "python_doc.pdf"
+
 cobol_doc_text = extract_text_from_pdf(COBOL_DOC_PATH)
+python_doc_text = extract_text_from_pdf(PYTHON_DOC_PATH)
+
 cobol_sections = cobol_doc_text.split("\n")
+python_sections = python_doc_text.split("\n")
 
 # Generate embeddings for documentation sections
 def get_embedding(text):
@@ -36,15 +41,16 @@ def get_embedding(text):
     )
     return np.array(response["data"][0]["embedding"])
 
-# Store embeddings for COBOL documentation
+# Store embeddings for COBOL and Python documentation
 cobol_embeddings = {section: get_embedding(section) for section in cobol_sections if section.strip()}
+python_embeddings = {section: get_embedding(section) for section in python_sections if section.strip()}
 
-# Function to find relevant documentation for COBOL code
-def find_relevant_doc(cobol_code):
+# Function to find relevant documentation
+def find_relevant_doc(cobol_code, embeddings):
     query_embedding = get_embedding(cobol_code)
     best_match = None
     best_score = -1
-    for section, emb in cobol_embeddings.items():
+    for section, emb in embeddings.items():
         similarity = cosine_similarity([query_embedding], [emb])[0][0]
         if similarity > best_score:
             best_match = section
@@ -55,22 +61,27 @@ def find_relevant_doc(cobol_code):
 def convert_cobol_to_python(cobol_code):
     # Extract relevant mapping
     mappings = [m for m in PYTHON_COBOL_MAPPING if m["cobol_concept"] in cobol_code]
-    prompt = "Convert this COBOL program to Python while following these mappings: \n\n"
+    prompt = "Convert this COBOL program to Python while following these mappings:\n\n"
     for mapping in mappings:
         prompt += f"COBOL: {mapping['cobol_concept']} -> Python: {mapping['python_concept']}\n"
     
-    # Add relevant documentation
-    relevant_doc = find_relevant_doc(cobol_code)
-    if relevant_doc:
-        prompt += f"\nAdditional COBOL Documentation:\n{relevant_doc}\n"
+    # Find relevant COBOL and Python documentation
+    relevant_cobol_doc = find_relevant_doc(cobol_code, cobol_embeddings)
+    relevant_python_doc = find_relevant_doc(cobol_code, python_embeddings)
     
+    # Add relevant documentation to prompt
+    if relevant_cobol_doc:
+        prompt += f"\nAdditional COBOL Documentation:\n{relevant_cobol_doc}\n"
+    if relevant_python_doc:
+        prompt += f"\nRelevant Python Documentation:\n{relevant_python_doc}\n"
+
     prompt += f"\nCOBOL Code:\n{cobol_code}\n\nPython Equivalent:"  
-    
+
     response = openai.Completion.create(
         model="code-davinci-002",
         prompt=prompt,
         temperature=0.3,
-        max_tokens=300
+        max_tokens=400
     )
     return response["choices"][0]["text"].strip()
 
